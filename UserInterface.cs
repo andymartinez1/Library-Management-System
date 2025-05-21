@@ -1,10 +1,13 @@
-﻿using Spectre.Console;
+﻿using LibraryManagementSystem.Controllers;
+using Spectre.Console;
 
 namespace LibraryManagementSystem;
 
 internal class UserInterface
 {
-    private BooksController _booksController = new BooksController();
+    private readonly BookController _bookController = new();
+    private readonly MagazineController _magazinesController = new();
+    private readonly NewspaperController _newspapersController = new();
 
     internal void MainMenu()
     {
@@ -12,23 +15,78 @@ internal class UserInterface
         {
             Console.Clear();
 
-            var choice = AnsiConsole.Prompt(
-                new SelectionPrompt<Enums.MenuOption>()
-                    .Title("What do you want to do?")
-                    .AddChoices(Enum.GetValues<Enums.MenuOption>()));
+            var actionChoice = AnsiConsole.Prompt(
+                new SelectionPrompt<Enums.MenuAction>()
+                .Title("What do you want to do next?")
+                .AddChoices(Enum.GetValues<Enums.MenuAction>()));
 
-            switch (choice)
+            var itemTypeChoice = AnsiConsole.Prompt(
+                new SelectionPrompt<Enums.ItemType>()
+                .Title("Select the type of item:")
+                .AddChoices(Enum.GetValues<Enums.ItemType>()));
+
+            switch (actionChoice)
             {
-                case Enums.MenuOption.ViewBooks:
-                    _booksController.ViewBooks();
+                case Enums.MenuAction.ViewItem:
+                    ViewItems(itemTypeChoice);
                     break;
-                case Enums.MenuOption.AddBook:
-                    _booksController.AddBook();
+                case Enums.MenuAction.AddItem:
+                    AddItem(itemTypeChoice);
                     break;
-                case Enums.MenuOption.DeleteBook:
-                    _booksController.DeleteBook();
+                case Enums.MenuAction.DeleteItem:
+                    DeleteItem(itemTypeChoice);
                     break;
             }
+
+
+        }
+    }
+
+    private void ViewItems(Enums.ItemType itemType)
+    {
+        switch (itemType)
+        {
+            case Enums.ItemType.Book:
+                _bookController.ViewItems();
+                break;
+            case Enums.ItemType.Magazine:
+                _magazinesController.ViewItems();
+                break;
+            case Enums.ItemType.Newspaper:
+                _newspapersController.ViewItems();
+                break;
+        }
+    }
+
+    private void AddItem(Enums.ItemType itemType)
+    {
+        switch (itemType)
+        {
+            case Enums.ItemType.Book:
+                _bookController.AddItem();
+                break;
+            case Enums.ItemType.Magazine:
+                _magazinesController.AddItem();
+                break;
+            case Enums.ItemType.Newspaper:
+                _newspapersController.AddItem();
+                break;
+        }
+    }
+
+    private void DeleteItem(Enums.ItemType itemType)
+    {
+        switch (itemType)
+        {
+            case Enums.ItemType.Book:
+                _bookController.DeleteItem();
+                break;
+            case Enums.ItemType.Magazine:
+                _magazinesController.DeleteItem();
+                break;
+            case Enums.ItemType.Newspaper:
+                _newspapersController.DeleteItem();
+                break;
         }
     }
 }
